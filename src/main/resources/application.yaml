@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: COURSE-SERVICE
+  profiles:
+    active: dev
