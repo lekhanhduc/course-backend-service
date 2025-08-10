@@ -1,10 +1,13 @@
 package vn.fpt.courseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.fpt.courseservice.dto.request.UserCreationRequest;
 import vn.fpt.courseservice.dto.response.UserCreationResponse;
+import vn.fpt.courseservice.dto.response.UserDetailResponse;
 import vn.fpt.courseservice.model.User;
 import vn.fpt.courseservice.repository.UserRepository;
 
@@ -32,4 +35,18 @@ public class UserService {
                 .username(user.getUsername())
                 .build();
     }
+
+    public UserDetailResponse getUserInfo() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return UserDetailResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .build();
+    }
+
 }
