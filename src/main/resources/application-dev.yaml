@@ -11,3 +11,8 @@ spring:
 
 jwt:
   secret-key: DE1rOq6sK6IJedpFwfQMn2rMcjXvhIpjiYEaqWKZY8nHls0lWwLzCkUVnbMxnSkRSfVKXncbFv7WI1qS9G62BPYbRmpYrWNiRYED3FFwmN2hHA7cpID3Dylr29OpSaIM
+
+cloudinary:
+  cloud-name: drdskl2up
+  api-key: 869234121115222
+  api-secret: V3-V1LbkUODb8Q7FF5hAghQITOg

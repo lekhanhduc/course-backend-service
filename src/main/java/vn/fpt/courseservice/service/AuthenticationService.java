@@ -1,5 +1,6 @@
 package vn.fpt.courseservice.service;
 
+import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,5 +34,6 @@ public class AuthenticationService {
                 .refreshToken(refreshToken)
                 .build();
     }
+
 
 }

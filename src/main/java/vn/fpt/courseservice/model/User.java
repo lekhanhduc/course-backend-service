@@ -27,6 +27,9 @@ public class User implements UserDetails {
 
     private String password;
 
+    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL)
+    private List<Course> courses;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

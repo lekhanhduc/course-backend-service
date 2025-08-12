@@ -3,6 +3,7 @@ package vn.fpt.courseservice.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +19,11 @@ import vn.fpt.courseservice.service.UserDetailServiceCustomizer;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    private static final String [] PUBLIC_ENDPOINTS = {
+            "/api/v1/users" ,
+            "/api/v1/auth"
+    };
+
     private final JwtDecoderCustomizer jwtDecoder;
     private final UserDetailServiceCustomizer userDetailService;
 
@@ -25,7 +31,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.authorizeHttpRequests(request -> request.requestMatchers("/api/v1/users", "/api/v1/auth").permitAll()
+        http.authorizeHttpRequests(request ->
+                request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/courses").permitAll()
+
                 .anyRequest().authenticated());
 
         http.oauth2ResourceServer(oauth2 ->
