@@ -12,6 +12,8 @@ import vn.fpt.courseservice.dto.response.LoginResponse;
 import vn.fpt.courseservice.enums.TokenType;
 import vn.fpt.courseservice.model.User;
 
+import java.text.ParseException;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,6 +21,7 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RedisService redisService;
 
     public LoginResponse login(LoginRequest request) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
@@ -33,6 +36,18 @@ public class AuthenticationService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    public void logout(String token) throws ParseException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        String jwtId = signedJWT.getJWTClaimsSet().getJWTID();
+        long expirationTim = signedJWT.getJWTClaimsSet().getExpirationTime().getTime();
+        long now = System.currentTimeMillis();
+
+        int duration = (int) (expirationTim - now);
+
+        redisService.add(jwtId, token, duration);
     }
 
 

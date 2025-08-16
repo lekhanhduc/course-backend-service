@@ -12,6 +12,7 @@ import vn.fpt.courseservice.model.User;
 import java.text.ParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,8 @@ public class JwtService {
 
     @Value("${jwt.secret-key}")
     private String secretKey;
+
+    private final RedisService redisService;
 
     public String generateToken(User user, TokenType tokenType) {
 
@@ -35,6 +38,7 @@ public class JwtService {
                 .subject(user.getEmail())
                 .issueTime(issueTime)
                 .expirationTime(expirationTime)
+                .jwtID(UUID.randomUUID().toString())
                 .build();
 
         Payload payload = new Payload(claimsSet.toJSONObject());
@@ -57,7 +61,12 @@ public class JwtService {
             return false;
         }
 
-        // check black list token
+        String tokenBlackList = redisService.get(signedJWT.getJWTClaimsSet().getJWTID());
+
+        if(tokenBlackList != null) {
+            return false;
+        }
+
         return true;
     }
 
